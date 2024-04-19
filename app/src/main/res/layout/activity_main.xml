@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/backgroundImageView"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:background="#321711" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/img"
+            app:shapeAppearanceOverlay="@style/roundimageview" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:background="#321711"
+        android:orientation="vertical"
+        android:id="@+id/btnOrderMgmt">
+
+        <Button
+            android:id="@+id/btnProductMgmt"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_background_color"
+            android:fontFamily="@font/sora_regular"
+            android:gravity="center"
+            android:text="@string/quản_lý_sản_phẩm"
+            android:textColor="@color/bgColor_l1"
+            android:textSize="18sp"
+            android:enabled="true"/>
+
+        <Button
+            android:id="@+id/btnDiscountMgmt"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_background_color"
+            android:fontFamily="@font/sora_regular"
+            android:gravity="center"
+            android:text="Quản lý khuyến mãi"
+            android:textColor="@color/bgColor_l1"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnStatistic"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_background_color"
+            android:fontFamily="@font/sora_regular"
+            android:gravity="center"
+            android:text="Thống kê"
+            android:textColor="@color/bgColor_l1"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_margin="16dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_background_color">
+            <TextView
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:text="Đơn hàng"
+                android:textSize="24sp"
+                android:textColor="#000"
+                android:gravity="center"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="-40dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bell_regular"
+                android:layout_marginTop="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="10"
+                android:textColor="@color/white"
+                android:gravity="top"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="20dp"
+                android:textStyle="bold"
+                android:background="@drawable/rounded_small_btn"
+                android:layout_marginTop="2dp"
+                android:padding="5dp"/>
+
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnCustomerMgmt"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_background_color"
+            android:fontFamily="@font/sora_regular"
+            android:gravity="center"
+            android:text="Quản lý khách hàng"
+            android:textColor="@color/bgColor_l1"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

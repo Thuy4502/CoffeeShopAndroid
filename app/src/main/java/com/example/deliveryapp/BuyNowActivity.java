@@ -1,0 +1,330 @@
+package com.example.deliveryapp;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.deliveryapp.Api.ApiService;
+import com.example.deliveryapp.adapter.ProductInOrderAdapter;
+import com.example.deliveryapp.model.CommonResponse;
+import com.example.deliveryapp.model.OrderRequest;
+import com.example.deliveryapp.model.ProAPI;
+import com.example.deliveryapp.model.User;
+import com.example.deliveryapp.model.UserInfor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class BuyNowActivity extends AppCompatActivity {
+    List<ProAPI> productList;
+    ProductInOrderAdapter adapter;
+    RecyclerView rvProduct;
+    OrderRequest orderRequest;
+    TextView tvProductName, tvProductPrice, tvQuantity, tvTotalPrice, tvDeliveryCost, tvSize, tvAddress, tvPrice, tvFlexible;
+    ImageView ivProductImg, ivAdd, ivMinus;
+    public static int quantity ;
+    public static float totalPrice;
+    public static ProAPI sp;
+    UserInfor userInfor;
+    String newAddress;
+    LinearLayout lyEditAdress;
+    private Toolbar appBar;
+    String token="eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTMxNTM1MTEsImV4cCI6MTcxMzc1ODMxMSwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.BuqNsRGHaEhsRv0L4-Xn9aM4hXmfNVAoN4Di4Na7lDmiaygfRFCUB0EA-S-B45oW";
+
+    Button btnOrder, btnChangeAddress, btnDelivery, btnPickUp;
+    public static float price,  tPrice,  dCost, priceBySize;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_user_order);
+        setControl();
+        quantity = Integer.parseInt(String.valueOf(tvQuantity.getText()));
+        dCost = Float.parseFloat(String.valueOf(tvDeliveryCost.getText()));
+        callApiGetUserInfor();
+        setInfor();
+        setEvent();
+    }
+
+    public void setControl() {
+        tvProductName = findViewById(R.id.tvProductName);
+        ivProductImg = findViewById(R.id.ivProductImg);
+        ivMinus = findViewById(R.id.ivMinus);
+        ivAdd = findViewById(R.id.ivAdd);
+        tvProductPrice = findViewById(R.id.tv_productPrice);
+        tvQuantity = findViewById(R.id.tvQuantity);
+        tvTotalPrice = findViewById(R.id.tvTotalPrice);
+        tvDeliveryCost = findViewById(R.id.tvDeliveryCost);
+        btnOrder = findViewById(R.id.btnOrder);
+        tvSize = findViewById(R.id.tvSize);
+        tvAddress = findViewById(R.id.tvUserAddress);
+        btnChangeAddress = findViewById(R.id.btnChangeAddress2);
+        tvPrice = findViewById(R.id.tvPrice);
+        btnDelivery = findViewById(R.id.btnDelivery);
+        btnPickUp = findViewById(R.id.btnPickUp);
+        tvFlexible = findViewById(R.id.tvFlexible);
+        lyEditAdress = findViewById(R.id.lyEditAdress);
+        appBar = findViewById(R.id.app_bar);
+
+
+    }
+
+    public void setEvent() {
+        int cornerRadiusPixels = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                12, // giá trị ban đầu của bán kính ở đơn vị dp
+                getResources().getDisplayMetrics()
+        );
+
+        GradientDrawable drawableEnable = new GradientDrawable();
+        drawableEnable.setShape(GradientDrawable.RECTANGLE);
+        drawableEnable.setCornerRadius(cornerRadiusPixels);
+        drawableEnable.setColor(Color.parseColor("#b42329"));
+
+        GradientDrawable drawableDisable = new GradientDrawable();
+        drawableDisable.setShape(GradientDrawable.RECTANGLE);
+        drawableDisable.setCornerRadius(cornerRadiusPixels);
+        drawableDisable.setColor(Color.parseColor("#FFFFFF"));
+        drawableDisable.setStroke(4, Color.parseColor("#b42329"));
+
+        ivAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quantity+=1;
+                tvQuantity.setText(String.valueOf(quantity));
+                updateProductPrice();
+
+            }
+        });
+
+        ivMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity >=2) {
+                    quantity-=1;
+                    tvQuantity.setText(String.valueOf(quantity));
+                    updateProductPrice();
+                }
+
+
+            }
+        });
+
+        btnOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getApiBuyNow();
+            }
+        });
+
+        btnChangeAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateAddressDialog(Gravity.CENTER);
+            }
+        });
+
+        btnDelivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnDelivery.setBackground(drawableEnable);
+                btnPickUp.setBackground(drawableDisable);
+                btnPickUp.setTextColor(Color.BLACK);
+                btnDelivery.setTextColor(Color.WHITE);
+                dCost = 15000;
+                updateProductPrice();
+                lyEditAdress.setVisibility(View.VISIBLE);
+                callApiGetUserInfor();
+            }
+        });
+
+        btnPickUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnDelivery.setBackground(drawableDisable);
+                btnPickUp.setBackground(drawableEnable);
+                btnPickUp.setTextColor(Color.WHITE);
+                btnDelivery.setTextColor(Color.BLACK);
+                dCost = 0;
+                updateProductPrice();
+                lyEditAdress.setVisibility(View.GONE);
+                tvAddress.setText("97 Man Thiện, P.Hiệp Phú, Tp.Thủ Đức, Tp.HCM");
+                lyEditAdress.setVisibility(View.GONE);
+            }
+        });
+
+        appBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+
+    private void updateProductPrice() {
+        float newPrice = priceBySize * quantity;
+        totalPrice = dCost + newPrice;
+        tvProductPrice.setText(UserOrderActivity.formatNumber(newPrice));
+        tvTotalPrice.setText(UserOrderActivity.formatNumber(totalPrice));
+
+    }
+
+    public void getApiBuyNow() {
+        if (orderRequest == null) {
+            orderRequest = new OrderRequest();
+        }
+        System.out.println("00000000000000" + sp.getProductId());
+        orderRequest.setProduct_id(sp.getProductId());
+        orderRequest.setSize(ProductDetailActivity.size);
+        updateProductPrice();
+        orderRequest.setPrice(totalPrice);
+        orderRequest.setQuantity(1);
+        orderRequest.setTopping("");
+        ApiService.apiService.buyNow("Bearer " + token, orderRequest).enqueue(new Callback<CommonResponse>() {
+            @Override
+            public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
+//                Toast.makeText(BuyNowActivity.this, "Đặt hàng thành công", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(BuyNowActivity.this, OrderSuccessfully.class);
+                startActivity(intent);
+                System.out.println("Buy now thành công!");
+
+            }
+
+            @Override
+            public void onFailure(Call<CommonResponse> call, Throwable t) {
+                System.out.println("Buy now thất bại!");
+            }
+        });
+
+        System.out.println("tttttttttttttttttttttttttttttt"+orderRequest.toString());
+
+    }
+
+    public void setInfor() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            OrderRequest orderRequest = (OrderRequest) intent.getSerializableExtra("buyNow");
+            sp  = (ProAPI) intent.getSerializableExtra("product");
+            priceBySize = (float) intent.getSerializableExtra("priceBySize");
+            productList = new ArrayList<>();
+            productList.add(sp);
+            System.out.println("Danh sách sản phẩm " + productList.get(0).getProductName());
+            tvProductName.setText(sp.getProductName());
+            tvSize.setText(ProductDetailActivity.size);
+            Glide.with(BuyNowActivity.this)
+                    .load(sp.getImage()) // Lấy URL hình ảnh từ đối tượng ProAPI
+                    .into(ivProductImg);
+            tvProductPrice.setText(UserOrderActivity.formatNumber(priceBySize));
+            tvPrice.setText(UserOrderActivity.formatNumber(priceBySize));
+            updateProductPrice();
+        }
+
+
+    }
+
+    public void callApiChangeAdress() {
+        User user = new User();
+        user.setAddress(newAddress);
+        user.setBirthday(userInfor.getData().getBirthday());
+        user.setCccd(userInfor.getData().getCccd());
+        user.setEmail(userInfor.getData().getEmail());
+        user.setFirstname(userInfor.getData().getFirstname());
+        user.setLastname(userInfor.getData().getLastname());
+        user.setTax_id(userInfor.getData().getTax_id());
+
+        ApiService.apiService.changeAddress("Bearer "+token, user).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Toast.makeText(BuyNowActivity.this, "Thay đổi địa chỉ thành công", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void callApiGetUserInfor() {
+        ApiService.apiService.getUserInfor("Bearer "+token).enqueue(new Callback<UserInfor>() {
+            @Override
+            public void onResponse(Call<UserInfor> call, Response<UserInfor> response) {
+                userInfor = response.body();
+                System.out.println("Lay thong tin user thanh cong");
+                System.out.println("Ddddddddddddd" + userInfor.getData().getAddress());
+                tvAddress.setText(String.valueOf(userInfor.getData().getAddress()));
+            }
+
+            @Override
+            public void onFailure(Call<UserInfor> call, Throwable t) {
+                System.out.println("Lay thong tin user thanh cong");
+
+            }
+        });
+    }
+
+    private void updateAddressDialog(int gravity) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_add_address);
+
+        Window window = dialog.getWindow();
+        if(window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttribute = window.getAttributes();
+        windowAttribute.gravity = gravity;
+        window.setAttributes(windowAttribute);
+
+        if(Gravity.BOTTOM == gravity) {
+            dialog.setCancelable(true);
+        }
+        else {
+            dialog.setCancelable(true);
+        }
+
+        EditText edtAddress = dialog.findViewById(R.id.edtAddress);
+        Button btnSave = dialog.findViewById(R.id.btnSaveChange);
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newAddress = String.valueOf(edtAddress.getText());
+                System.out.println("-------------------------" + newAddress);
+                callApiChangeAdress();
+                dialog.dismiss();
+                callApiGetUserInfor();
+            }
+        });
+
+        dialog.show();
+
+    }
+}
