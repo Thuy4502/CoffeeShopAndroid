@@ -2,11 +2,9 @@ package com.example.deliveryapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class OrderSuccessfully extends AppCompatActivity {
@@ -27,7 +25,7 @@ public class OrderSuccessfully extends AppCompatActivity {
         ivHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrderSuccessfully.this, ProductCustomerAPI.class);
+                Intent intent = new Intent(OrderSuccessfully.this, HomeActivity.class);
                 startActivity(intent);
             }
         });

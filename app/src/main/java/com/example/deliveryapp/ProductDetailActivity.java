@@ -17,15 +17,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.colormoon.readmoretextview.ReadMoreTextView;
-import com.example.deliveryapp.Api.ApiService;
+import com.example.deliveryapp.api.ApiService;
 import com.example.deliveryapp.adapter.ProductCustomerAdapter;
-import com.example.deliveryapp.model.CartRequest;
-import com.example.deliveryapp.model.Category;
-import com.example.deliveryapp.model.CommonResponse;
-import com.example.deliveryapp.model.OrderRequest;
-import com.example.deliveryapp.model.ProAPI;
+import com.example.deliveryapp.model.request.CartRequest;
+import com.example.deliveryapp.model.request.OrderRequest;
+import com.example.deliveryapp.model.Product;
 import com.example.deliveryapp.model.Size;
-import com.example.deliveryapp.model.SizeList;
+import com.example.deliveryapp.model.response.CommonResponse;
 
 import java.util.List;
 
@@ -39,10 +37,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ProductCustomerAdapter adapter;
     private Button btnBuyNow, btnAddItem, btnSizeS, btnSizeM, btnSizeL;
     private Toolbar appBar;
-    public static ProAPI sp;
-    public static ProAPI roduct = new ProAPI();
+    public static Product sp;
+    public static Product roduct = new Product();
     OrderRequest orderRequest;
-    SizeList<Size> allSize;
+    CommonResponse<Size> allSize;
     public static String size="";
     String categoryName="";
     public static float percent= 0;
@@ -136,7 +134,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("DAY LA SIZEEE" + size);
-                ProAPI sendProduct;
+                Product sendProduct;
                 sendProduct = getProductDetail();
                 Intent intent = new Intent(ProductDetailActivity.this, BuyNowActivity.class);
                 if (orderRequest != null) {
@@ -166,7 +164,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                         cartRequest.setProduct_name(sp.getProductName());
                         cartRequest.setSize(size);
                         cartRequest.setTopping("");
-                        ProductCustomerAPI.callApiAddCart(cartRequest);
+                        HomeActivity.callApiAddCart(cartRequest);
                         Toast.makeText(ProductDetailActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
 
                     }
@@ -175,6 +173,16 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                     }
                 }
+                else {
+                    CartRequest cartRequest = new CartRequest();
+                    cartRequest.setProduct_name(sp.getProductName());
+                    cartRequest.setSize(size);
+                    cartRequest.setTopping("");
+                    HomeActivity.callApiAddCart(cartRequest);
+                    Toast.makeText(ProductDetailActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+
+                }
+
 
 
             }
@@ -189,11 +197,11 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
 
-    public ProAPI getProductDetail() {
+    public Product getProductDetail() {
         String id = adapter.productID;
-        ApiService.apiService.getProductDetail("Bearer "+token, id).enqueue(new Callback<ProAPI>() {
+        ApiService.apiService.getProductDetail("Bearer "+token, id).enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(@NonNull Call<ProAPI> call, @NonNull Response<ProAPI> response) {
+            public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
                 sp = response.body();
                 categoryName = String.valueOf(sp.getCategory().getCategory_name());
                 System.out.println("Loại nèeeee" + categoryName);
@@ -215,7 +223,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProAPI> call, Throwable t) {
+            public void onFailure(Call<Product> call, Throwable t) {
                 Toast.makeText(ProductDetailActivity.this, "Lỗi lấy thông tin chi tiết sản phẩm", Toast.LENGTH_LONG).show();
             }
         });
@@ -224,10 +232,11 @@ public class ProductDetailActivity extends AppCompatActivity {
 
 
     public void getAllSize() {
-        ApiService.apiService.getPriceBySize("Bearer " + token).enqueue(new Callback<SizeList<Size>>() {
+        ApiService.apiService.getPriceBySize("Bearer " + token).enqueue(new Callback<CommonResponse<Size>>() {
             @Override
-            public void onResponse(Call<SizeList<Size>> call, Response<SizeList<Size>> response) {
+            public void onResponse(Call<CommonResponse<Size>> call, Response<CommonResponse<Size>> response) {
                 allSize = response.body();
+
                 List<Size> listSize= allSize.getData();
                 for(Size i: listSize) {
                     if(i.getCategory().getCategory_name().equals(categoryName) && i.getSize().getSize_name().equals(size)) {
@@ -240,7 +249,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SizeList<Size>> call, Throwable t) {
+            public void onFailure(Call<CommonResponse<Size>> call, Throwable t) {
                 Toast.makeText(ProductDetailActivity.this, "Lấy tất cả size thất bại", Toast.LENGTH_LONG).show();
 
             }

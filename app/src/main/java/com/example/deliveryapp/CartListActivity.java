@@ -1,12 +1,10 @@
 package com.example.deliveryapp;
 
-import static com.example.deliveryapp.ProductCustomerAPI.countCart;
+import static com.example.deliveryapp.HomeActivity.countCart;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,13 +17,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.deliveryapp.Api.ApiService;
+import com.example.deliveryapp.api.ApiService;
 import com.example.deliveryapp.adapter.CartAdapter;
 import com.example.deliveryapp.model.Cart;
-import com.example.deliveryapp.model.CartListResponse;
+import com.example.deliveryapp.model.FullCart;
+import com.example.deliveryapp.model.response.SingleResponse;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,7 +42,7 @@ public class CartListActivity extends AppCompatActivity {
 
     public static float totalPrice;
 
-//    public static int countCart;
+    //    public static int countCart;
     static String token = "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTM4NDU0OTgsImV4cCI6MTcxNDQ1MDI5OCwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.nzaEjAP5q0ZUyiSIRNJCQtJegz8wS_UgnG8lo89TgJDydUx5zJsAiz-Gnsx7oqUm";
 
 
@@ -64,7 +61,7 @@ public class CartListActivity extends AppCompatActivity {
     }
 
     public static void setButtonBuy(int countCart) {
-        if(ProductCustomerAPI.countCart == 0) {
+        if(HomeActivity.countCart == 0) {
             btnBuy.setEnabled(false);
         }
         else {
@@ -107,36 +104,42 @@ public class CartListActivity extends AppCompatActivity {
 
 
     public static void callApiGetAllCart() {
-        ApiService.apiService.getAllCart("Bearer "+token).enqueue(new Callback<CartListResponse>() {
+        ApiService.apiService.getAllCart("Bearer " + token).enqueue(new Callback<SingleResponse<FullCart>>() {
             @Override
-            public void onResponse(@NonNull Call<CartListResponse> call, @NonNull Response<CartListResponse> response) {
-                CartListResponse list = new CartListResponse();
-                list = response.body();
-                if (list != null && list.getData() != null && list.getData().getCart_detail() != null) {
-                    cartList = list.getData().getCart_detail();
-                    cartAdapter = new CartAdapter(cartList);
-                    rvCart.setAdapter(cartAdapter);
-                    totalPrice = list.getData().getTotal_price();
-                    tvTotalPrice.setText(UserOrderActivity.formatNumber(totalPrice));
-                    cartAdapter.updateTotalPrice(totalPrice);
-                    cartAdapter.notifyDataSetChanged();
-                    countCart = cartList.size();
-                    setButtonBuy(countCart);
-
+            public void onResponse(@NonNull Call<SingleResponse<FullCart>> call, @NonNull Response<SingleResponse<FullCart>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SingleResponse<FullCart> list = response.body();
+                    if (list.getData() != null && list.getData().getCart_detail() != null) {
+                        cartList = list.getData().getCart_detail();
+                        cartAdapter = new CartAdapter(cartList);
+                        rvCart.setAdapter(cartAdapter);
+                        totalPrice = list.getData().getTotal_price();
+                        tvTotalPrice.setText(UserOrderActivity.formatNumber(totalPrice));
+                        cartAdapter.updateTotalPrice(totalPrice);
+                        cartAdapter.notifyDataSetChanged();
+                        countCart = cartList.size();
+                        setButtonBuy(countCart);
+                    } else {
+                        System.out.println("Gio hang rong");
+                        // Xử lý khi danh sách giỏ hàng rỗng
+                        GradientDrawable drawableEnable = new GradientDrawable();
+                        drawableEnable.setShape(GradientDrawable.RECTANGLE);
+                        drawableEnable.setCornerRadius(54);
+                    }
                 } else {
-                    System.out.println("Gio hang rong");
-                    GradientDrawable drawableEnable = new GradientDrawable();
-                    drawableEnable.setShape(GradientDrawable.RECTANGLE);
-                    drawableEnable.setCornerRadius(54);
+                    // Xử lý khi response không thành công
+                    System.out.println("Response không thành công");
                 }
             }
 
             @Override
-            public void onFailure(Call<CartListResponse> call, Throwable t) {
+            public void onFailure(Call<SingleResponse<FullCart>> call, Throwable t) {
+                // Xử lý khi gặp lỗi trong quá trình gọi API
                 System.out.println("-----------------------Lỗi truy cập giỏ hàng");
             }
         });
     }
+
 
     public static void setTotalPrice(float price) {
         tvTotalPrice.setText(UserOrderActivity.formatNumber(price));

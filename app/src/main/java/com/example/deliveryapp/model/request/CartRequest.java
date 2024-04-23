@@ -1,4 +1,4 @@
-package com.example.deliveryapp.model;
+package com.example.deliveryapp.model.request;
 
 import com.google.gson.Gson;
 

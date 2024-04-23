@@ -6,7 +6,7 @@ public class Cart implements Serializable {
     private int quantity;
     private int price;
     private String size;
-    private ProAPI product;
+    private Product product;
 
     private String topping;
 
@@ -15,7 +15,7 @@ public class Cart implements Serializable {
 
     private String product_id;
 
-    public Cart(int quantity, int price, String size, ProAPI product) {
+    public Cart(int quantity, int price, String size, Product product) {
         this.quantity = quantity;
         this.price = price;
         this.size = size;
@@ -54,11 +54,11 @@ public class Cart implements Serializable {
         this.size = size;
     }
 
-    public ProAPI getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(ProAPI product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 }

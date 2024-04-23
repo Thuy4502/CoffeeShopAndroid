@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.example.deliveryapp.R;
 import com.example.deliveryapp.UserOrderActivity;
 import com.example.deliveryapp.model.Cart;
-import com.example.deliveryapp.model.ProAPI;
 
 import java.util.List;
 

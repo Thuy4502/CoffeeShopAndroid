@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class ProAPI implements Serializable {
+public class Product implements Serializable {
 
         @SerializedName("product_id")
         private String productId;
@@ -46,10 +46,10 @@ public class ProAPI implements Serializable {
         // Getter và setter
 
 
-    public ProAPI() {
+    public Product() {
     }
 
-    public ProAPI(String productId, String productName, String image, String description, String createdAt, String updatedAt, Category category, Staff staffCreated, Staff staffUpdated, String status, List<PriceUpdateDetail> price_update_detail, boolean isAddToCart) {
+    public Product(String productId, String productName, String image, String description, String createdAt, String updatedAt, Category category, Staff staffCreated, Staff staffUpdated, String status, List<PriceUpdateDetail> price_update_detail, boolean isAddToCart) {
         this.productId = productId;
         this.productName = productName;
         this.image = image;

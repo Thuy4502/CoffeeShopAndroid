@@ -1,14 +1,14 @@
-package com.example.deliveryapp.model;
+package com.example.deliveryapp.model.response;
 
-public class CommonResponse {
+public class RequestResponse {
     private String message;
     private String status;
     private int code;
 
-    public CommonResponse() {
+    public RequestResponse() {
     }
 
-    public CommonResponse(String message, String status, int code) {
+    public RequestResponse(String message, String status, int code) {
         this.message = message;
         this.status = status;
         this.code = code;

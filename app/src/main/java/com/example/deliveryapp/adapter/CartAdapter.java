@@ -1,33 +1,25 @@
 package com.example.deliveryapp.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.deliveryapp.CartListActivity;
-import com.example.deliveryapp.ProductCustomerAPI;
-import com.example.deliveryapp.ProductDetailActivity;
+import com.example.deliveryapp.HomeActivity;
 import com.example.deliveryapp.R;
 import com.example.deliveryapp.UserOrderActivity;
 import com.example.deliveryapp.model.Cart;
-import com.example.deliveryapp.model.CartListResponse;
-import com.example.deliveryapp.model.CartRequest;
-import com.example.deliveryapp.model.PriceUpdateDetail;
-import com.example.deliveryapp.model.ProAPI;
+import com.example.deliveryapp.model.request.CartRequest;
+import com.example.deliveryapp.model.Product;
 
 import java.util.List;
-
-import retrofit2.Callback;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder>
 {
@@ -60,7 +52,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
         Cart cart = cartList.get(position);
-        ProAPI sp = cart.getProduct();
+        Product sp = cart.getProduct();
         if (cart == null) {
             return;
         }
@@ -130,7 +122,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     }
                     cartData.setProduct_id(String.valueOf(cart.getProduct().getProductId()));
                     cartData.setSize(cart.getSize());
-                    ProductCustomerAPI.callApiIncrementCart(cartData);
+                    HomeActivity.callApiIncrementCart(cartData);
                 }
             });
 
@@ -156,7 +148,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                         cartData.setProduct_id(String.valueOf(cart.getProduct().getProductId()));
                         System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvv"+ cartData.getProduct_id());
                         cartData.setSize(cart.getSize());
-                        ProductCustomerAPI.callApiReduceCart(cartData);
+                        HomeActivity.callApiReduceCart(cartData);
 //                        CartListActivity.callApiGetAllCart();
                     }
                 }
@@ -173,8 +165,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     cartData.setProduct_id(String.valueOf(cart.getProduct().getProductId()));
                     cartData.setSize(cart.getSize());
                     cartData.getProduct_id();
-                    ProductCustomerAPI.updateAfterRemove();
-                    ProductCustomerAPI.callApiDeleteCart(cartData);
+                    HomeActivity.updateAfterRemove();
+                    HomeActivity.callApiDeleteCart(cartData);
                     CartListActivity.callApiGetAllCart();
                 }
             });

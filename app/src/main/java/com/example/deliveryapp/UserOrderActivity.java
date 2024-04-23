@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -25,19 +23,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.deliveryapp.Api.ApiService;
-import com.example.deliveryapp.adapter.CartAdapter;
-import com.example.deliveryapp.adapter.ProductCustomerAdapter;
+import com.example.deliveryapp.api.ApiService;
 import com.example.deliveryapp.adapter.ProductInOrderAdapter;
 import com.example.deliveryapp.model.Cart;
-import com.example.deliveryapp.model.CartListResponse;
-import com.example.deliveryapp.model.ProAPI;
-import com.example.deliveryapp.model.ProductListResponse;
+import com.example.deliveryapp.model.FullCart;
+import com.example.deliveryapp.model.response.SingleResponse;
 import com.example.deliveryapp.model.User;
-import com.example.deliveryapp.model.UserInfor;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -55,7 +48,7 @@ public class UserOrderActivity extends AppCompatActivity {
     static TextView tvProductPrice;
     static TextView tvTotalPrice;
     TextView tvAddress, tvFlexible, tvDeliveryCost, tvUserAddress;
-    UserInfor userInfor;
+    SingleResponse<User> userInfor;
     String newAddress;
     public static float totalProductPrice;
     LinearLayout lyDeliveryCost;
@@ -97,10 +90,10 @@ public class UserOrderActivity extends AppCompatActivity {
     }
 
     public static void callApiGetListProduct() {
-        ApiService.apiService.getAllCart("Bearer "+token).enqueue(new Callback<CartListResponse>() {
+        ApiService.apiService.getAllCart("Bearer "+token).enqueue(new Callback<SingleResponse<FullCart>>() {
             @Override
-            public void onResponse(@NonNull Call<CartListResponse> call, @NonNull Response<CartListResponse> response) {
-                CartListResponse list = response.body();
+            public void onResponse(@NonNull Call<SingleResponse<FullCart>> call, @NonNull Response<SingleResponse<FullCart>> response) {
+                SingleResponse<FullCart> list = response.body();
                 productList.clear();
                 productList.addAll(list.getData().getCart_detail());
                 totalProductPrice = list.getData().getTotal_price();
@@ -110,7 +103,7 @@ public class UserOrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CartListResponse> call, Throwable t) {
+            public void onFailure(Call<SingleResponse<FullCart>> call, Throwable t) {
                 System.out.println("Lỗi truy cập giỏ hàng");
             }
         });
@@ -262,10 +255,10 @@ public class UserOrderActivity extends AppCompatActivity {
     }
 
     public void callApiGetUserInfor() {
-        ApiService.apiService.getUserInfor("Bearer "+token).enqueue(new Callback<UserInfor
+        ApiService.apiService.getUserInfor("Bearer "+token).enqueue(new Callback<SingleResponse<User>
                 >() {
             @Override
-            public void onResponse(Call<UserInfor> call, Response<UserInfor> response) {
+            public void onResponse(Call<SingleResponse<User>> call, Response<SingleResponse<User>> response) {
                 userInfor = response.body();
                 System.out.println("Lay thong tin user thanh cong");
                 System.out.println("Ddddddddddddd" + userInfor.getData().getAddress());
@@ -273,7 +266,7 @@ public class UserOrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserInfor> call, Throwable t) {
+            public void onFailure(Call<SingleResponse<User>> call, Throwable t) {
                 System.out.println("Lay thong tin user thanh cong");
 
             }

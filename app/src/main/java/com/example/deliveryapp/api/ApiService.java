@@ -1,15 +1,14 @@
-package com.example.deliveryapp.Api;
+package com.example.deliveryapp.api;
 
-import com.example.deliveryapp.model.CartListResponse;
-import com.example.deliveryapp.model.CartRequest;
-import com.example.deliveryapp.model.CommonResponse;
-import com.example.deliveryapp.model.OrderRequest;
-import com.example.deliveryapp.model.ProAPI;
-import com.example.deliveryapp.model.ProductListResponse;
+import com.example.deliveryapp.model.FullCart;
+import com.example.deliveryapp.model.response.SingleResponse;
+import com.example.deliveryapp.model.request.CartRequest;
+import com.example.deliveryapp.model.response.RequestResponse;
+import com.example.deliveryapp.model.request.OrderRequest;
+import com.example.deliveryapp.model.Product;
+import com.example.deliveryapp.model.response.CommonResponse;
 import com.example.deliveryapp.model.Size;
-import com.example.deliveryapp.model.SizeList;
 import com.example.deliveryapp.model.User;
-import com.example.deliveryapp.model.UserInfor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import retrofit2.Call;
@@ -33,46 +32,46 @@ public interface ApiService {
 
 
     @GET("api/products/category?")
-    Call<ProductListResponse<ProAPI>> filterProductByCategory(@Header("Authorization") String token, @Query("name") String nameParam);
+    Call<CommonResponse<Product>> filterProductByCategory(@Header("Authorization") String token, @Query("name") String nameParam);
 
     @GET("api/product/all")
-    Call<ProductListResponse<ProAPI>> getProduct(@Header("Authorization") String token);
+    Call<CommonResponse<Product>> getProduct(@Header("Authorization") String token);
 
     @GET("api/cart/")
-    Call<CartListResponse> getAllCart(@Header("Authorization") String token);
+    Call<SingleResponse<FullCart>> getAllCart(@Header("Authorization") String token);
 
     @GET("api/admin/product/find/{productID}")
-    Call<ProAPI> getProductDetail(@Header("Authorization") String token, @Path("productID") String productID);
+    Call<Product> getProductDetail(@Header("Authorization") String token, @Path("productID") String productID);
 
     @PUT("api/cart/add")
-    Call<CommonResponse> addToCart(@Header("Authorization") String token, @Body CartRequest cart);
+    Call<RequestResponse> addToCart(@Header("Authorization") String token, @Body CartRequest cart);
 
     @PUT("api/cart/reduce/quantity")
-    Call<CommonResponse> reduceCart(@Header("Authorization") String token, @Body CartRequest cart);
+    Call<RequestResponse> reduceCart(@Header("Authorization") String token, @Body CartRequest cart);
 
     @PUT("api/cart/increment/quantity")
-    Call<CommonResponse> incrementCart(@Header("Authorization") String token, @Body CartRequest cart);
+    Call<RequestResponse> incrementCart(@Header("Authorization") String token, @Body CartRequest cart);
 
     @POST("api/cart/delete/item")
-    Call<CommonResponse> deleteCart(@Header("Authorization") String token, @Body CartRequest cart);
+    Call<RequestResponse> deleteCart(@Header("Authorization") String token, @Body CartRequest cart);
 
     @POST("api/order/create")
     Call<Void> addOrder(@Header("Authorization") String token);
 
     @POST("api/order/buynow")
-    Call<CommonResponse> buyNow(@Header("Authorization") String token, @Body OrderRequest orderRequest);
+    Call<RequestResponse> buyNow(@Header("Authorization") String token, @Body OrderRequest orderRequest);
 
     @POST("api/order/create")
     Call<Void> orderInCart(@Header("Authorization") String token);
 
     @GET("api/order/size/all")
-    Call<SizeList<Size>> getPriceBySize(@Header("Authorization") String token);
+    Call<CommonResponse<Size>> getPriceBySize(@Header("Authorization") String token);
 
     @PUT("api/customer/3/update")
     Call<Void> changeAddress(@Header("Authorization") String token, @Body User user);
 
     @GET("api/users/profile")
-    Call<UserInfor> getUserInfor(@Header("Authorization") String token);
+    Call<SingleResponse<User>> getUserInfor(@Header("Authorization") String token);
 
 
 

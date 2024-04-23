@@ -2,7 +2,6 @@ package com.example.deliveryapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,33 +12,33 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.deliveryapp.ProductCustomerAPI;
+import com.example.deliveryapp.HomeActivity;
 import com.example.deliveryapp.ProductDetailActivity;
 import com.example.deliveryapp.R;
 import com.example.deliveryapp.UserOrderActivity;
-import com.example.deliveryapp.model.CartRequest;
+import com.example.deliveryapp.model.request.CartRequest;
 import com.example.deliveryapp.model.PriceUpdateDetail;
-import com.example.deliveryapp.model.ProAPI;
+import com.example.deliveryapp.model.Product;
 
 import java.util.List;
 
 
 public class ProductCustomerAdapter extends RecyclerView.Adapter<ProductCustomerAdapter.ProductCustomerHolder> {
 
-    private List<ProAPI> listProduct;
+    private List<Product> listProduct;
     private static Context context;
     public static String productID;
     public static CartRequest cartRequest = new CartRequest();
-    public static ProAPI sanPham;
+    public static Product sanPham;
 
 
 
-    public void setFilteredList(List<ProAPI> filteredList) {
+    public void setFilteredList(List<Product> filteredList) {
         this.listProduct = filteredList;
         notifyDataSetChanged();
     }
 
-    public ProductCustomerAdapter(List<ProAPI> listProduct) {
+    public ProductCustomerAdapter(List<Product> listProduct) {
 
         this.listProduct = listProduct;
     }
@@ -56,7 +55,7 @@ public class ProductCustomerAdapter extends RecyclerView.Adapter<ProductCustomer
 
     @Override
     public void onBindViewHolder(@NonNull ProductCustomerHolder holder, int position) {
-        ProAPI sp = listProduct.get(position);
+        Product sp = listProduct.get(position);
         if(sp == null) {
             return;
         }
@@ -111,7 +110,7 @@ public class ProductCustomerAdapter extends RecyclerView.Adapter<ProductCustomer
         private ImageView ivAnhSp;
         int position;
         View rootView;
-        ProAPI product;
+        Product product;
         public ProductCustomerHolder(@NonNull View itemView) {
             super(itemView);
             txtProductName = itemView.findViewById(R.id.txtProductName);
@@ -135,7 +134,7 @@ public class ProductCustomerAdapter extends RecyclerView.Adapter<ProductCustomer
                         cartRequest.setProduct_name(product.getProductName());
                         cartRequest.setSize("M");
                         cartRequest.setTopping("");
-                        ProductCustomerAPI.callApiAddCart(cartRequest);
+                        HomeActivity.callApiAddCart(cartRequest);
                         product.setAddToCart(true);
                         sanPham = product;
                     }

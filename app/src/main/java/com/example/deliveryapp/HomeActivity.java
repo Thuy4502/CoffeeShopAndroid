@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,16 +20,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 
-import com.example.deliveryapp.Api.ApiService;
-import com.example.deliveryapp.adapter.CartAdapter;
+import com.example.deliveryapp.api.ApiService;
 import com.example.deliveryapp.adapter.PhotoAdapter;
 import com.example.deliveryapp.adapter.ProductCustomerAdapter;
-import com.example.deliveryapp.model.CartListResponse;
-import com.example.deliveryapp.model.CartRequest;
-import com.example.deliveryapp.model.CommonResponse;
+import com.example.deliveryapp.model.FullCart;
+import com.example.deliveryapp.model.response.SingleResponse;
+import com.example.deliveryapp.model.request.CartRequest;
+import com.example.deliveryapp.model.response.RequestResponse;
 import com.example.deliveryapp.model.Photo;
-import com.example.deliveryapp.model.ProAPI;
-import com.example.deliveryapp.model.ProductListResponse;
+import com.example.deliveryapp.model.Product;
+import com.example.deliveryapp.model.response.CommonResponse;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -45,9 +44,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductCustomerAPI extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     static RecyclerView rvProduct;
-    private static List<ProAPI> listPro;
+    private static List<Product> listPro;
     static ProductCustomerAdapter productApiAdapter;
     private TextView btnAddItem;
 
@@ -266,7 +265,7 @@ public class ProductCustomerAPI extends AppCompatActivity {
                     case R.id.btn_listOder:
                         return true;
                     case R.id.btn_showCart:
-                        Intent cartIntent = new Intent(ProductCustomerAPI.this, CartListActivity.class);
+                        Intent cartIntent = new Intent(HomeActivity.this, CartListActivity.class);
                         startActivity(cartIntent);
                         return true;
                 }
@@ -276,9 +275,9 @@ public class ProductCustomerAPI extends AppCompatActivity {
     }
 
     private void fileList(String text) {
-        List<ProAPI> filterdList = new ArrayList<>();
+        List<Product> filterdList = new ArrayList<>();
         if(listPro != null) {
-            for (ProAPI i : listPro) {
+            for (Product i : listPro) {
                 if(i.getProductName().toLowerCase().contains(text.toLowerCase())) {
                     filterdList.add(i);
                 }
@@ -297,10 +296,10 @@ public class ProductCustomerAPI extends AppCompatActivity {
     }
 
     public void callApiGetProduct() {
-        ApiService.apiService.getProduct("Bearer "+token).enqueue(new Callback<ProductListResponse<ProAPI>>() {
+        ApiService.apiService.getProduct("Bearer "+token).enqueue(new Callback<CommonResponse<Product>>() {
             @Override
-            public void onResponse(@NonNull Call<ProductListResponse<ProAPI>> call, @NonNull Response<ProductListResponse<ProAPI>> response) {
-                ProductListResponse<ProAPI> list = new ProductListResponse<>();
+            public void onResponse(@NonNull Call<CommonResponse<Product>> call, @NonNull Response<CommonResponse<Product>> response) {
+                CommonResponse<Product> list = new CommonResponse<>();
                 list = response.body();
                 listPro = list.getData();
                 productApiAdapter = new ProductCustomerAdapter(list.getData());
@@ -309,17 +308,17 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProductListResponse<ProAPI>> call, Throwable t) {
-                Toast.makeText(ProductCustomerAPI.this, "Lỗi lấy tất cả sản phẩm", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<CommonResponse<Product>> call, Throwable t) {
+                Toast.makeText(HomeActivity.this, "Lỗi lấy tất cả sản phẩm", Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public static void updateAfterRemove() {
-        ApiService.apiService.getProduct("Bearer "+token).enqueue(new Callback<ProductListResponse<ProAPI>>() {
+        ApiService.apiService.getProduct("Bearer "+token).enqueue(new Callback<CommonResponse<Product>>() {
             @Override
-            public void onResponse(@NonNull Call<ProductListResponse<ProAPI>> call, @NonNull Response<ProductListResponse<ProAPI>> response) {
-                ProductListResponse<ProAPI> list = new ProductListResponse<>();
+            public void onResponse(@NonNull Call<CommonResponse<Product>> call, @NonNull Response<CommonResponse<Product>> response) {
+                CommonResponse<Product> list = new CommonResponse<>();
                 list = response.body();
                 listPro = list.getData();
                 productApiAdapter = new ProductCustomerAdapter(list.getData());
@@ -328,7 +327,7 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProductListResponse<ProAPI>> call, Throwable t) {
+            public void onFailure(Call<CommonResponse<Product>> call, Throwable t) {
                 System.out.println("Lỗi cập nhật trạng thái sản phẩm");
             }
         });
@@ -336,10 +335,10 @@ public class ProductCustomerAPI extends AppCompatActivity {
 
     private void callApiFilterProductByCategory() {
 
-        ApiService.apiService.filterProductByCategory("Bearer "+token, name).enqueue(new Callback<ProductListResponse<ProAPI>>() {
+        ApiService.apiService.filterProductByCategory("Bearer "+token, name).enqueue(new Callback<CommonResponse<Product>>() {
             @Override
-            public void onResponse(Call<ProductListResponse<ProAPI>> call, Response<ProductListResponse<ProAPI>> response) {
-                ProductListResponse<ProAPI> list = new ProductListResponse<>();
+            public void onResponse(Call<CommonResponse<Product>> call, Response<CommonResponse<Product>> response) {
+                CommonResponse<Product> list = new CommonResponse<>();
                 list = response.body();
                 assert list != null;
                 listPro = list.getData();
@@ -348,19 +347,19 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProductListResponse<ProAPI>> call, Throwable t) {
-                Toast.makeText(ProductCustomerAPI.this, "Lỗi lọc sản phẩm theo loại", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<CommonResponse<Product>> call, Throwable t) {
+                Toast.makeText(HomeActivity.this, "Lỗi lọc sản phẩm theo loại", Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public static void callApiAddCart(CartRequest cart) {
-        ApiService.apiService.addToCart("Bearer "+token, cart).enqueue(new Callback<CommonResponse>() {
+        ApiService.apiService.addToCart("Bearer "+token, cart).enqueue(new Callback<RequestResponse>() {
             @Override
-            public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
+            public void onResponse(Call<RequestResponse> call, Response<RequestResponse> response) {
                 System.out.println("Them vao gio hang thanh cong");
-                CommonResponse cartResponse = response.body();
-                ProductCustomerAPI.setCountProductInCart();
+                RequestResponse cartResponse = response.body();
+                HomeActivity.setCountProductInCart();
                 if(cartResponse != null) {
                     System.out.println("Thêm sản phẩm vào giỏ hành thất bại");
                 }
@@ -371,18 +370,18 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CommonResponse> call, Throwable t) {
+            public void onFailure(Call<RequestResponse> call, Throwable t) {
                 System.out.println("Them vao gio hang that bai");
             }
         });
     }
 
     public static void callApiReduceCart(CartRequest cart) {
-        ApiService.apiService.reduceCart("Bearer "+token, cart).enqueue(new Callback<CommonResponse>() {
+        ApiService.apiService.reduceCart("Bearer "+token, cart).enqueue(new Callback<RequestResponse>() {
             @Override
-            public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
+            public void onResponse(Call<RequestResponse> call, Response<RequestResponse> response) {
                 System.out.println("Xóa sản phảm khỏi gio hang thanh cong");
-                CommonResponse cartResponse = response.body();
+                RequestResponse cartResponse = response.body();
                 if(cartResponse != null) {
                     System.out.println("Giảm số lượng sản phẩm thành công");
                 }
@@ -393,18 +392,18 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CommonResponse> call, Throwable t) {
+            public void onFailure(Call<RequestResponse> call, Throwable t) {
                 System.out.println("Xóa sản phảm khỏi gio hang that bai");
             }
         });
     }
 
     public static void callApiIncrementCart(CartRequest cart) {
-        ApiService.apiService.incrementCart("Bearer "+token, cart).enqueue(new Callback<CommonResponse>() {
+        ApiService.apiService.incrementCart("Bearer "+token, cart).enqueue(new Callback<RequestResponse>() {
             @Override
-            public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
+            public void onResponse(Call<RequestResponse> call, Response<RequestResponse> response) {
                 System.out.println("Them vao gio hang thanh cong");
-                CommonResponse cartResponse = response.body();
+                RequestResponse cartResponse = response.body();
                 if(cartResponse != null) {
                     System.out.println("Tăng số lượng sản phẩm thất bại");
                 }
@@ -415,18 +414,18 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CommonResponse> call, Throwable t) {
+            public void onFailure(Call<RequestResponse> call, Throwable t) {
                 System.out.println("Them vao gio hang that bai");
             }
         });
     }
 
     public static void callApiDeleteCart(CartRequest cart) {
-        ApiService.apiService.deleteCart("Bearer "+token, cart).enqueue(new Callback<CommonResponse>() {
+        ApiService.apiService.deleteCart("Bearer "+token, cart).enqueue(new Callback<RequestResponse>() {
             @Override
-            public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
+            public void onResponse(Call<RequestResponse> call, Response<RequestResponse> response) {
                 System.out.println("Xoa san pham khoi gio hang thanh cong");
-                CommonResponse cartResponse = response.body();
+                RequestResponse cartResponse = response.body();
                 setCountProductInCart();
 
                 if(cartResponse != null) {
@@ -439,7 +438,7 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CommonResponse> call, Throwable t) {
+            public void onFailure(Call<RequestResponse> call, Throwable t) {
                 System.out.println("Xoa san pham khoi gio hang that bai");
             }
         });
@@ -459,10 +458,10 @@ public class ProductCustomerAPI extends AppCompatActivity {
     }
 
     public static void getCountCart(CountCartCallback callback) {
-        ApiService.apiService.getAllCart("Bearer " + token).enqueue(new Callback<CartListResponse>() {
+        ApiService.apiService.getAllCart("Bearer " + token).enqueue(new Callback<SingleResponse<FullCart>>() {
             @Override
-            public void onResponse(@NonNull Call<CartListResponse> call, @NonNull Response<CartListResponse> response) {
-                CartListResponse list = response.body();
+            public void onResponse(@NonNull Call<SingleResponse<FullCart>> call, @NonNull Response<SingleResponse<FullCart>> response) {
+                SingleResponse<FullCart> list = response.body();
                 if (list != null && list.getData() != null && list.getData().getCart_detail() != null) {
                     countCart = list.getData().getCart_detail().size();
                     System.out.println("Số lượng sản phẩm hiện có trong giỏ hàng là: " + countCart);
@@ -473,7 +472,7 @@ public class ProductCustomerAPI extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CartListResponse> call, Throwable t) {
+            public void onFailure(Call<SingleResponse<FullCart>> call, Throwable t) {
                 System.out.println("Lỗi truy cập giỏ hàng");
             }
         });

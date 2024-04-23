@@ -24,13 +24,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.deliveryapp.Api.ApiService;
+import com.example.deliveryapp.api.ApiService;
 import com.example.deliveryapp.adapter.ProductInOrderAdapter;
-import com.example.deliveryapp.model.CommonResponse;
-import com.example.deliveryapp.model.OrderRequest;
-import com.example.deliveryapp.model.ProAPI;
+import com.example.deliveryapp.model.response.RequestResponse;
+import com.example.deliveryapp.model.request.OrderRequest;
+import com.example.deliveryapp.model.Product;
 import com.example.deliveryapp.model.User;
-import com.example.deliveryapp.model.UserInfor;
+import com.example.deliveryapp.model.response.SingleResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BuyNowActivity extends AppCompatActivity {
-    List<ProAPI> productList;
+    List<Product> productList;
     ProductInOrderAdapter adapter;
     RecyclerView rvProduct;
     OrderRequest orderRequest;
@@ -48,8 +48,8 @@ public class BuyNowActivity extends AppCompatActivity {
     ImageView ivProductImg, ivAdd, ivMinus;
     public static int quantity ;
     public static float totalPrice;
-    public static ProAPI sp;
-    UserInfor userInfor;
+    public static Product sp;
+    SingleResponse<User> userInfor;
     String newAddress;
     LinearLayout lyEditAdress;
     private Toolbar appBar;
@@ -204,9 +204,9 @@ public class BuyNowActivity extends AppCompatActivity {
         orderRequest.setPrice(totalPrice);
         orderRequest.setQuantity(1);
         orderRequest.setTopping("");
-        ApiService.apiService.buyNow("Bearer " + token, orderRequest).enqueue(new Callback<CommonResponse>() {
+        ApiService.apiService.buyNow("Bearer " + token, orderRequest).enqueue(new Callback<RequestResponse>() {
             @Override
-            public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
+            public void onResponse(Call<RequestResponse> call, Response<RequestResponse> response) {
 //                Toast.makeText(BuyNowActivity.this, "Đặt hàng thành công", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(BuyNowActivity.this, OrderSuccessfully.class);
                 startActivity(intent);
@@ -215,7 +215,7 @@ public class BuyNowActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CommonResponse> call, Throwable t) {
+            public void onFailure(Call<RequestResponse> call, Throwable t) {
                 System.out.println("Buy now thất bại!");
             }
         });
@@ -228,7 +228,7 @@ public class BuyNowActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             OrderRequest orderRequest = (OrderRequest) intent.getSerializableExtra("buyNow");
-            sp  = (ProAPI) intent.getSerializableExtra("product");
+            sp  = (Product) intent.getSerializableExtra("product");
             priceBySize = (float) intent.getSerializableExtra("priceBySize");
             productList = new ArrayList<>();
             productList.add(sp);
@@ -270,9 +270,9 @@ public class BuyNowActivity extends AppCompatActivity {
     }
 
     public void callApiGetUserInfor() {
-        ApiService.apiService.getUserInfor("Bearer "+token).enqueue(new Callback<UserInfor>() {
+        ApiService.apiService.getUserInfor("Bearer "+token).enqueue(new Callback<SingleResponse<User>>() {
             @Override
-            public void onResponse(Call<UserInfor> call, Response<UserInfor> response) {
+            public void onResponse(Call<SingleResponse<User>> call, Response<SingleResponse<User>> response) {
                 userInfor = response.body();
                 System.out.println("Lay thong tin user thanh cong");
                 System.out.println("Ddddddddddddd" + userInfor.getData().getAddress());
@@ -280,7 +280,7 @@ public class BuyNowActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserInfor> call, Throwable t) {
+            public void onFailure(Call<SingleResponse<User>> call, Throwable t) {
                 System.out.println("Lay thong tin user thanh cong");
 
             }

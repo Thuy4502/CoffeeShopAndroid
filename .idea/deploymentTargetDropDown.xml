@@ -12,7 +12,20 @@
         <State />
       </entry>
       <entry key="ProductCustomerAPI">
-        <State />
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="R58T51ELE1H" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-23T08:27:44.840410700Z" />
+        </State>
       </entry>
       <entry key="ProductDetailActivity">
         <State />
