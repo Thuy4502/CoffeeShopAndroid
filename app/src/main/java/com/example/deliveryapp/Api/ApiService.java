@@ -25,10 +25,10 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
-    public String bearToken = "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTMzMjQyMzcsImV4cCI6MTcxMzkyOTAzNywidXNlcm5hbWUiOiIrODQ2MjIyMTAzNSIsImF1dGhvcml0aWVzIjoiU1RBRkYifQ.Jg2FHEYZleqPDMiasvZsaeL-HAo8W6JInddweYsihvoOfBbjFJXxYZdrBIpovf-H";
+    public String bearToken = "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTM4NDU0OTgsImV4cCI6MTcxNDQ1MDI5OCwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.nzaEjAP5q0ZUyiSIRNJCQtJegz8wS_UgnG8lo89TgJDydUx5zJsAiz-Gnsx7oqUm";
 
     ApiService apiService = new Retrofit.Builder()
-            .baseUrl("http://192.168.1.146:9999/").addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl("http://192.10.1.36:9999/").addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(ApiService.class);
 
 

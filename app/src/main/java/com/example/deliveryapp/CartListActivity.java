@@ -46,7 +46,7 @@ public class CartListActivity extends AppCompatActivity {
     public static float totalPrice;
 
 //    public static int countCart;
-    static String token = "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTMxNTM1MTEsImV4cCI6MTcxMzc1ODMxMSwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.BuqNsRGHaEhsRv0L4-Xn9aM4hXmfNVAoN4Di4Na7lDmiaygfRFCUB0EA-S-B45oW";
+    static String token = "eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTM4NDU0OTgsImV4cCI6MTcxNDQ1MDI5OCwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.nzaEjAP5q0ZUyiSIRNJCQtJegz8wS_UgnG8lo89TgJDydUx5zJsAiz-Gnsx7oqUm";
 
 
 

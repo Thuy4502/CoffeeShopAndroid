@@ -46,9 +46,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     public static String size="";
     String categoryName="";
     public static float percent= 0;
+    public String category = "";
 
     float priceBySize;
-    String token="eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTMxNTM1MTEsImV4cCI6MTcxMzc1ODMxMSwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.BuqNsRGHaEhsRv0L4-Xn9aM4hXmfNVAoN4Di4Na7lDmiaygfRFCUB0EA-S-B45oW";
+    String token="eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTM4NDU0OTgsImV4cCI6MTcxNDQ1MDI5OCwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.nzaEjAP5q0ZUyiSIRNJCQtJegz8wS_UgnG8lo89TgJDydUx5zJsAiz-Gnsx7oqUm";
 
     private ReadMoreTextView tvReadMore;
     @Override
@@ -130,39 +131,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-//        btnBuyNow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if(!size.equals("")) {
-//                    System.out.println("DAY LA SIZEEE" + size);
-//                    ProAPI sendProduct;
-//                    sendProduct = getProductDetail();
-//                    Intent intent = new Intent(ProductDetailActivity.this, BuyNowActivity.class);
-//                    if (orderRequest != null) {
-//                        intent.putExtra("buyNow", orderRequest);
-//                    }
-//                    if (priceBySize != 0) {
-//                        intent.putExtra("priceBySize", priceBySize);
-//                    }
-//
-//                    if (sendProduct != null) {
-//                        intent.putExtra("product", sendProduct);
-//                    }
-//                    else {
-//                        System.out.println("Không có thông tin sản phẩm");
-//                    }
-//                    startActivity(intent);
-//
-//                }
-//                else {
-//                    Toast.makeText(ProductDetailActivity.this, "Bạn chưa chọn size sản phẩm", Toast.LENGTH_LONG).show();
-//                }
-//
-//
-//
-//            }
-//        });
 
         btnBuyNow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,11 +160,21 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CartRequest cartRequest = new CartRequest();
-                cartRequest.setProduct_name(sp.getProductName());
-                cartRequest.setSize(size);
-                cartRequest.setTopping("");
-                ProductCustomerAPI.callApiAddCart(cartRequest);
+                if(!categoryName.equals("Bánh")) {
+                    if(size.equals("S") || size.equals("M") || size.equals("L")) {
+                        CartRequest cartRequest = new CartRequest();
+                        cartRequest.setProduct_name(sp.getProductName());
+                        cartRequest.setSize(size);
+                        cartRequest.setTopping("");
+                        ProductCustomerAPI.callApiAddCart(cartRequest);
+                        Toast.makeText(ProductDetailActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+
+                    }
+                    else {
+                        Toast.makeText(ProductDetailActivity.this, "Bạn chưa chọn size", Toast.LENGTH_LONG).show();
+
+                    }
+                }
 
 
             }
@@ -218,6 +196,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ProAPI> call, @NonNull Response<ProAPI> response) {
                 sp = response.body();
                 categoryName = String.valueOf(sp.getCategory().getCategory_name());
+                System.out.println("Loại nèeeee" + categoryName);
                 tvNameDetail.setText(sp.getProductName());
                 tvPriceDetail.setText(UserOrderActivity.formatNumber(sp.getPrice_update_detail().get(0).getPriceNew()));
                 tvReadMore.setText(sp.getDescription());
@@ -269,7 +248,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void setControl() {
-
         tvReadMore = findViewById(R.id.tvReadMore);
         tvNameDetail = findViewById(R.id.tv_productName);
         tvPriceDetail = findViewById(R.id.tv_productPrice);

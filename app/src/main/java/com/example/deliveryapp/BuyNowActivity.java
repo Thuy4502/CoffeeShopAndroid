@@ -53,7 +53,7 @@ public class BuyNowActivity extends AppCompatActivity {
     String newAddress;
     LinearLayout lyEditAdress;
     private Toolbar appBar;
-    String token="eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTMxNTM1MTEsImV4cCI6MTcxMzc1ODMxMSwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.BuqNsRGHaEhsRv0L4-Xn9aM4hXmfNVAoN4Di4Na7lDmiaygfRFCUB0EA-S-B45oW";
+    String token="eyJhbGciOiJIUzM4NCJ9.eyJpYXQiOjE3MTM4NDU0OTgsImV4cCI6MTcxNDQ1MDI5OCwidXNlcm5hbWUiOiIwOTI3MDE0MDUxIiwiYXV0aG9yaXRpZXMiOiJDVVNUT01FUiJ9.nzaEjAP5q0ZUyiSIRNJCQtJegz8wS_UgnG8lo89TgJDydUx5zJsAiz-Gnsx7oqUm";
 
     Button btnOrder, btnChangeAddress, btnDelivery, btnPickUp;
     public static float price,  tPrice,  dCost, priceBySize;

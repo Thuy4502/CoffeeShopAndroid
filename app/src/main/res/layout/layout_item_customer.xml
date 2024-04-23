@@ -46,7 +46,6 @@
                 android:id="@+id/ivAnhSp"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
-                android:background="@drawable/img_product"
                 android:scaleType="centerCrop"/>
 
             <TextView

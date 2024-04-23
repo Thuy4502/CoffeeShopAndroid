@@ -43,8 +43,7 @@
                     android:id="@+id/img_product"
                     android:layout_width="280dp"
                     android:layout_height="280dp"
-                    android:layout_gravity = "center"
-                    android:background="@drawable/phindichoco"/>
+                    android:layout_gravity = "center" />
                 <TextView
                     android:id="@+id/tv_productName"
                     android:layout_width="wrap_content"
